@@ -2,20 +2,20 @@ using NNlib: logsoftmax, logσ
 
 # Cost functions
 
-mse(ŷ, y) = sum((ŷ .- y).^2) * 1 // length(y)
+mse(ŷ, y) = sum((ŷ .- y).^2) * 1 // length(y)
 
-function crossentropy(ŷ::AbstractVecOrMat, y::AbstractVecOrMat; weight = 1)
-  -sum(y .* log.(ŷ) .* weight) * 1 // size(y, 2)
+function crossentropy(ŷ::AbstractVecOrMat, y::AbstractVecOrMat; weight = 1)
+  -sum(y .* log.(ŷ)) .* weight * 1 // size(y, 2)
 end
 
-function logitcrossentropy(logŷ::AbstractVecOrMat, y::AbstractVecOrMat; weight = 1)
-  return -sum(y .* logsoftmax(logŷ) .* weight) * 1 // size(y, 2)
+function logitcrossentropy(logŷ::AbstractVecOrMat, y::AbstractVecOrMat; weight = 1)
+  return -sum(y .* logsoftmax(logŷ) .* weight) * 1 // size(y, 2)
 end
 
 """
-    binarycrossentropy(ŷ, y; ϵ=eps(ŷ))
+    binarycrossentropy(ŷ, y; ϵ=eps(ŷ))
 
-Return `-y*log(ŷ + ϵ) - (1-y)*log(1-ŷ + ϵ)`. The ϵ term provides numerical stability.
+Return `-y*log(ŷ + ϵ) - (1-y)*log(1-ŷ + ϵ)`. The ϵ term provides numerical stability.
 
     julia> binarycrossentropy.(σ.([-1.1491, 0.8619, 0.3127]), [1, 1, 0.])
     3-element Array{Float64,1}:
@@ -23,7 +23,7 @@ Return `-y*log(ŷ + ϵ) - (1-y)*log(1-ŷ + ϵ)`. The ϵ term provides numerica
     0.352317
     0.86167
 """
-binarycrossentropy(ŷ, y; ϵ=eps(ŷ)) = -y*log(ŷ + ϵ) - (1 - y)*log(1 - ŷ + ϵ)
+binarycrossentropy(ŷ, y; ϵ=eps(ŷ)) = -y*log(ŷ + ϵ) - (1 - y)*log(1 - ŷ + ϵ)
 
 """
     logitbinarycrossentropy(logŷ, y)
@@ -37,7 +37,7 @@ but it is more numerically stable.
      0.352317
      0.86167
 """
-logitbinarycrossentropy(logŷ, y) = (1 - y)*logŷ - logσ(logŷ)
+logitbinarycrossentropy(logŷ, y) = (1 - y)*logŷ - logσ(logŷ)
 
 """
     normalise(x::AbstractArray; dims=1)
